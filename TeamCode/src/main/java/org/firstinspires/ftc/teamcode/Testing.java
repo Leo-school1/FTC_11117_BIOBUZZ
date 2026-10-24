@@ -34,9 +34,11 @@ import android.annotation.SuppressLint;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
 
 
 @TeleOp(name="Testing", group="Teleop")
@@ -51,6 +53,9 @@ public class Testing extends OpMode
     private List<DcMotorEx> devices = null;
     private int targetVelocity = 0;
     private int targetVelocityDirection = 1;
+    private ElapsedTime time = new ElapsedTime();
+    private double turretAngle = 0;
+
 
     @Override
     public void init() {
@@ -102,6 +107,10 @@ public class Testing extends OpMode
                 hardware.lb.getVelocity(),
                 hardware.rb.getVelocity()
         ));
+
+        turretAngle += gamepad1.right_stick_x * time.milliseconds() / 50;
+        time.reset();
+        hardware.aimTurret(turretAngle);
 
         if (gamepad1.dpad_down) {targetVelocityDirection = -1;} else {targetVelocityDirection = 1;}
 

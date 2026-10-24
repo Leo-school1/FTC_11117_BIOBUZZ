@@ -41,19 +41,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 // https://github.com/SuitBots/ftc_app/blob/isaac5-resq/FtcRobotController/src/main/java/com/suitbots/resq/Isaac5.java
 public class Hardware
 {
-    public DcMotorEx lf, lb, rf, rb, launcher, intake, transfer;
+    public DcMotorEx lf, lb, rf, rb, launcher, intake, transfer, turret;
 
-    private double x, y, heading; // cm and radians
-    private double lastX, lastY; // raw readings
-    private double deltaX, deltaY, deltaHeading;
-
-    private Pose initPose;
 
 
     private final RobotConstants constants = new RobotConstants();
 
     public Telemetry telemetry;
-    public IMU imu;
     Hardware(HardwareMap hardwareMap, Telemetry _telemetry) {
         telemetry = _telemetry;
 
@@ -65,6 +59,7 @@ public class Hardware
         launcher = hardwareMap.get(DcMotorEx.class, "launcher");
         intake = hardwareMap.get(DcMotorEx.class, "intake");
         transfer = hardwareMap.get(DcMotorEx.class, "transfer");
+        turret = hardwareMap.get(DcMotorEx.class, "turret");
 
         lf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -78,6 +73,12 @@ public class Hardware
         launcher.setDirection(constants.launcher_direction);
         intake.setDirection(constants.intake_direction);
         transfer.setDirection(constants.transfer_direction);
+        turret.setDirection(constants.turret_direction);
+
+        turret.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        turret.setTargetPosition(0);
+        turret.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        turret.setPower(0.3);
     }
 
     public void mecanumDrive(double forward, double strafe, double rotate) {
@@ -94,6 +95,15 @@ public class Hardware
         rf.setPower(RF);
         rb.setPower(RB);
     }
+    public void aimTurret(double heading) {
+        // convert input to [0,360]
+        heading = heading - 360*Math.floor(heading/360);
+
+        double ticks = heading/360;
+        ticks *= 2.5;
+        ticks *= 537.6;
+        turret.setTargetPosition((int)ticks);
+    }
 
     public void updateTelemetry() {
         telemetry.addData("LF: ",lf.getVelocity());
@@ -102,7 +112,7 @@ public class Hardware
         telemetry.addData("RB: ",rb.getVelocity());
         telemetry.addData("Launcher", launcher.getVelocity());
 
-
     }
+
 
 }
