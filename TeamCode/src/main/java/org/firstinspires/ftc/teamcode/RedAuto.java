@@ -22,6 +22,8 @@ public class RedAuto extends LinearOpMode {
 
     private Follower follower;
 
+    private Hardware hardware;
+
     private final PoseFactory poseFactory = PoseFactory.degrees();
 
     private final Pose start = poseFactory.of(56, 8, 90);
@@ -43,6 +45,8 @@ public class RedAuto extends LinearOpMode {
         follower = Constants.create(hardwareMap);
         follower.setPose(start);
         follower.update();
+
+        hardware = new Hardware(hardwareMap, telemetry);
 
         waitForStart();
         schedule(autoRoutine());

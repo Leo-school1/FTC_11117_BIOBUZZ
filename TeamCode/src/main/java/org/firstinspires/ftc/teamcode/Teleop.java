@@ -28,6 +28,8 @@ public class Teleop extends OpMode
         Transfer();
         Launcher();
 
+        hardware.turret.setPower(0);
+
         PrevGamepad1.copy(gamepad1);
         hardware.updateTelemetry();
         telemetry.update();

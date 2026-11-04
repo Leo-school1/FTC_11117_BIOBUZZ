@@ -65,6 +65,7 @@ public class Hardware
         lb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rf.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rb.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        turret.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         lf.setDirection(constants.lf_direction);
         lb.setDirection(constants.lb_direction);
@@ -103,6 +104,18 @@ public class Hardware
         ticks *= 2.5;
         ticks *= 537.6;
         turret.setTargetPosition((int)ticks);
+    }
+    public void updateShoot() {
+        // Basic design for autonomous
+        launcher.setVelocity(constants.SHOOT_VELOCITY);
+        if (launcher.getVelocity() > constants.SHOOT_VELOCITY * 0.95) {
+            intake.setPower(1);
+            transfer.setPower(1);
+        } else {
+            intake.setPower(0);
+            transfer.setPower(0);
+        }
+
     }
 
     public void updateTelemetry() {
